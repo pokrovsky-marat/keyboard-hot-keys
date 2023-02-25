@@ -6,17 +6,17 @@ space::
   Send {Space}
 return 
 
-; Basic movement
-space & j::Send {Left}
-space & l::Send {Right}
-space & i::Send {Up}
-space & k::Send {Down}
+; Basic movement without {Blind} Shift doesn't select
+space & j::Send {Blind}{Left}
+space & l::Send {Blind}{Right}
+space & i::Send {Blind}{Up}
+space & k::Send {Blind}{Down}
 
 ; Emulate PgUp, PgDn, Home, End buttons.
-space & h::Send {Home}
-space & SC027::Send {End}
-space & u::Send {PgUp}
-space & n::Send {PgDn}
+space & h::Send {Blind}{Home}
+space & SC027::Send {Blind}{End}
+space & u::Send {Blind}{PgUp}
+space & n::Send {Blind}{PgDn}
 
 ; Call context menu
 space & p::Send {AppsKey}
