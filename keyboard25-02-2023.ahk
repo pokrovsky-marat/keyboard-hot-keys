@@ -55,7 +55,7 @@ space & x::
 return
 
 ; Select word around cursor
-space & s::Send ^{Right}^+{Left}
+space & d::Send ^{Right}^+{Left}
 
 ; Select line around cursor
 space & f::
