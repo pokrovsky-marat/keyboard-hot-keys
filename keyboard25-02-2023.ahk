@@ -1,15 +1,33 @@
 ﻿;Отключаем Capslock
 SetCapsLockState AlwaysOff
 
+;move line up function
+; Double {home} to select spaces and tabs
+MoveLineUp()
+{
+  temp_clipboard:= clipboard
+  clipboard:=""
+  SendInput, {End}+{Home}+{Home}^x{Delete}{Up}^v{Enter}{Up}
+  Sleep, 80
+  ;Строка ниже может сработать быстрее чем команда сверху поэтому ставим таймер
+  clipboard:=temp_clipboard
+  return
+}
 ; Просто пробел это пробел, пробел с другими клавишами меняет значение.
 space::
   Send {Space}
-return 
+return
 
 ; Basic movement without {Blind} Shift doesn't select
 space & j::Send {Blind}{Left}
 space & l::Send {Blind}{Right}
-space & i::Send {Blind}{Up}
+space & i::
+  if GetKeyState("Alt")
+    MoveLineUp()
+  else
+    Send {Blind}{Up}
+return
+
 space & k::Send {Blind}{Down}
 
 ; Emulate PgUp, PgDn, Home, End buttons.
@@ -65,7 +83,7 @@ return
 
 ; Copy line and add below
 space & a::
-  temp_clipboard:= clipboard 
+  temp_clipboard:= clipboard
   Send {End}+{Home}^c{End}{Enter}^v
   clipboard:=temp_clipboard
 return
