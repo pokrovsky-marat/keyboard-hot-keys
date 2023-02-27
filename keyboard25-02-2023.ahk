@@ -1,14 +1,25 @@
 ﻿;Отключаем Capslock
 SetCapsLockState AlwaysOff
 
+;move line down
+MoveLineDown()
+{
+  temp_clipboard:= clipboard
+  clipboard:=""
+  SendInput, {End}+{Home}^c+{Home}{Delete}{Delete}{End}{Enter}^v
+  Sleep, 100
+  ;Строка ниже может сработать быстрее чем команда сверху поэтому ставим таймер
+  clipboard:=temp_clipboard
+  return
+}
 ;move line up function
 ; Double {home} to select spaces and tabs
 MoveLineUp()
 {
   temp_clipboard:= clipboard
   clipboard:=""
-  SendInput, {End}+{Home}+{Home}^x{Delete}{Up}^v{Enter}{Up}
-  Sleep, 80
+  SendInput, {End}+{Home}^c+{Home}{Delete}{Delete}{Up}^v{Enter}{Up}
+  Sleep, 100
   ;Строка ниже может сработать быстрее чем команда сверху поэтому ставим таймер
   clipboard:=temp_clipboard
   return
@@ -28,7 +39,12 @@ space & i::
     Send {Blind}{Up}
 return
 
-space & k::Send {Blind}{Down}
+space & k::
+  if GetKeyState("Alt")
+    MoveLineDown()
+  else
+    Send {Blind}{Down}
+return
 
 ; Emulate PgUp, PgDn, Home, End buttons.
 space & h::Send {Blind}{Home}
