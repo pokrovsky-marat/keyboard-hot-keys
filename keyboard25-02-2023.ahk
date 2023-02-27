@@ -1,5 +1,9 @@
-﻿;Отключаем Capslock
+﻿SetMouseDelay,-1 ;remove delays from mouse actions
+SetDefaultMouseSpeed, 0
+;Отключаем Capslock
 SetCapsLockState AlwaysOff
+;Reload Script, convinient while developing
+^#!Space::Reload
 
 ;move line down
 MoveLineDown()
@@ -101,6 +105,7 @@ return
 space & a::
   temp_clipboard:= clipboard
   Send {End}+{Home}^c{End}{Enter}^v
+  Sleep, 50
   clipboard:=temp_clipboard
 return
 
@@ -117,4 +122,31 @@ space & q::Send {Delete}
 ;Правый Альт стал контролом
 RAlt::Ctrl
 #IfWinActive
+return
+
+;Нажатие левой кнопки мыши
+CapsLock & Space::LButton
+
+;Нажатие левой кнопки мыши
+CapsLock & f::RButton
+
+;Move mouse cursor left
+CapsLock & a::MouseMove, -15,0,0, R
+;Move mouse cursor right
+CapsLock & d::MouseMove, 15,0,0, R
+
+;Move mouse cursor top, or wheel up if <alt> pressed
+CapsLock & w::
+  if GetKeyState("Alt")
+    Send {WheelUp 1}
+  else
+    MouseMove, 0,-15,0, R
+return
+
+;Move mouse cursor down
+CapsLock & s::
+  if GetKeyState("Alt")
+    Send {WheelDown 1}
+  else
+    MouseMove, 0,15,0, R
 return
