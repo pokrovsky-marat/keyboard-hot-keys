@@ -130,6 +130,9 @@ CapsLock & Space::LButton
 ;Нажатие левой кнопки мыши
 CapsLock & f::RButton
 
+;Нажатие средней кнопки мыши
+CapsLock & q::MButton
+
 ;Move mouse cursor left
 CapsLock & a::MouseMove, -15,0,0, R
 ;Move mouse cursor right
