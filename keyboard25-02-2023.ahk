@@ -1,49 +1,40 @@
-﻿SetMouseDelay,-1 ;remove delays from mouse actions
+﻿#NoEnv
+SendMode Input
+SetMouseDelay,-1 ;remove delays from mouse actions
 SetDefaultMouseSpeed, 0
+
 ;Отключаем Capslock
 SetCapsLockState AlwaysOff
+
 ;Reload Script, convinient while developing
 ^#!Space::Reload
 
-;move line down
-MoveLineDown()
-{
-  temp_clipboard:= clipboard
-  clipboard:=""
-  SendInput, {End}+{Home}^c+{Home}{Delete}{Delete}{End}{Enter}^v
-  Sleep, 100
-  ;Строка ниже может сработать быстрее чем команда сверху поэтому ставим таймер
-  clipboard:=temp_clipboard
-  return
-}
-;move line up function
-; Double {home} to select spaces and tabs
-MoveLineUp()
-{
-  temp_clipboard:= clipboard
-  clipboard:=""
-  SendInput, {End}+{Home}^c+{Home}{Delete}{Delete}{Up}^v{Enter}{Up}
-  Sleep, 100
-  ;Строка ниже может сработать быстрее чем команда сверху поэтому ставим таймер
-  clipboard:=temp_clipboard
-  return
-}
+; Смена раскладки
+LAlt & RAlt::SendInput {Shift}
+
+;Делаем
+RAlt::RControl
+
+;Работа с мышкой
+#Include %A_ScriptDir%\mouse.ahk
+;Работа с клавишей <Ctrl>
+#Include %A_ScriptDir%\vs_code_exaptions.ahk
+;Подключаем кастомные функции
+#Include %A_ScriptDir%\functions.ahk
+
 ; Просто пробел это пробел, пробел с другими клавишами меняет значение.
-space::
-  Send {Space}
-return
+; Если других горячих клавиш с пробелом не будет то работать не будет
 
 ; Basic movement without {Blind} Shift doesn't select
-space & j::Send {Blind}{Left}
-space & l::Send {Blind}{Right}
-space & i::
+CapsLock & j::Left
+CapsLock & l::Right
+CapsLock & i::
   if GetKeyState("Alt")
     MoveLineUp()
   else
     Send {Blind}{Up}
 return
-
-space & k::
+CapsLock & k::
   if GetKeyState("Alt")
     MoveLineDown()
   else
@@ -51,105 +42,23 @@ space & k::
 return
 
 ; Emulate PgUp, PgDn, Home, End buttons.
-space & h::Send {Blind}{Home}
-space & SC027::Send {Blind}{End}
-space & u::Send {Blind}{PgUp}
-space & n::Send {Blind}{PgDn}
+CapsLock & h::Home
+CapsLock & SC027::End
+CapsLock & u::PgUp
+CapsLock & n::PgDn
 
-; Call context menu
-space & p::Send {AppsKey}
-
-;For convenience. Change CTRL to spacebar
-space & z::Send ^z
-space & v::Send ^v
-space & g::Send ^g
-
-;Copy selection, or line if nothing is selected
-space & c::
-  clipboard := ""
-  Send, ^c
-  If(clipboard)
-  {
-    Send, ^c
-  }
-  else
-  {
-    Send {End}+{Home}^c{End}
-  }
-return
-
-;Copy and remove selection, or line if nothing is selected
-space & x::
-  clipboard := ""
-  Send, ^c
-  If(clipboard)
-  {
-    Send, ^x
-  }
-  else
-  {
-    Send {End}+{Home}^x
-  }
-return
-
-; Select word around cursor
-space & d::Send ^{Right}^+{Left}
-
-; Select line around cursor
-space & f::
-  Send {Home}
-  Send +{End}
-return
+;delete button <p>
+CapsLock & p::Delete
 
 ; Copy line and add below
-space & a::
-  temp_clipboard:= clipboard
-  Send {End}+{Home}^c{End}{Enter}^v
-  Sleep, 50
-  clipboard:=temp_clipboard
+CapsLock & o::
+  DoubleLine()
 return
+CapsLock & Enter::Send,{End}{Enter}
+;Select word
+CapsLock & m::Send,^{Right}+^{Left}
+;Select line
+CapsLock & SC033::Send,{End}+{Home}^x
+CapsLock & SC034::Send,{End}+{Home}
+CapsLock & SC035::Send,^{Right}+^{Left}
 
-;spacebar+ENTER=go to line below
-space & enter::
-  Send {End}
-  Send {Enter}
-return
-
-; Fast delete
-space & Backspace::Send ^{Backspace}
-space & q::Send {Delete}
-
-;Правый Альт стал контролом
-RAlt::Ctrl
-#IfWinActive
-return
-
-;Нажатие левой кнопки мыши
-CapsLock & Space::LButton
-
-;Нажатие левой кнопки мыши
-CapsLock & f::RButton
-
-;Нажатие средней кнопки мыши
-CapsLock & q::MButton
-
-;Move mouse cursor left
-CapsLock & a::MouseMove, -15,0,0, R
-;Move mouse cursor right
-CapsLock & d::MouseMove, 15,0,0, R
-
-;Move mouse cursor top, or wheel up if <alt> pressed
-CapsLock & w::
-  if GetKeyState("Alt")
-    Send {WheelUp 1}
-  else
-    MouseMove, 0,-15,0, R
-return
-
-;Move mouse cursor down
-CapsLock & s::
-  if GetKeyState("Alt")
-    Send {WheelDown 1}
-  else
-    MouseMove, 0,15,0, R
-return
