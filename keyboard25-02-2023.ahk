@@ -55,8 +55,6 @@ CapsLock & o::
   DoubleLine()
 return
 CapsLock & Enter::Send,{End}{Enter}
-;Select word
-CapsLock & m::Send,^{Right}+^{Left}
 ;Select line
 CapsLock & SC033::Send,{End}+{Home}^x
 CapsLock & SC034::Send,{End}+{Home}
